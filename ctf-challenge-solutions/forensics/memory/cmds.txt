@@ -1,0 +1,19 @@
+# Volatility 3 Quick Commands used in this challenge
+# Replace filename and PID correspondingly
+
+# Get System Information
+python3 vol.py -f stix.vmem windows.info
+
+# List active processes
+python3 vol.py -f stix.vmem windows.pslist
+python3 vol.py -f stix.vmem windows.psscan
+python3 vol.py -f stix.vmem windows.pstree
+
+# Check command line arguments
+python3 vol.py -f stix.vmem windows.cmdline
+
+# Dump specific process memory (assuming PID is 1234)
+python3 vol.py -f stix.vmem windows.memmap --pid 1234 --dump
+
+# Analyze dumped memory file for strings
+strings pid.1234.dmp | grep -i "CTF{"
