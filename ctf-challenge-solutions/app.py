@@ -1,4 +1,3 @@
-
 from flask import Flask, jsonify
 import subprocess
 import os
@@ -11,21 +10,26 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 def home():
     return "CTF Challenge Solution API is running!"
 
+@app.route('/list/<challenge>', methods=['GET'])
+def list_scripts(challenge):
+    challenge_path = os.path.join(BASE_DIR, challenge)
+    if not os.path.isdir(challenge_path):
+        return jsonify({"error": f"Challenge '{challenge}' not found"}), 404
+ 
+    scripts = [f[:-3] for f in os.listdir(challenge_path) if f.endswith('.py')]
+    return jsonify({"challenge": challenge, "scripts": scripts})
+
 @app.route('/run/<challenge>/<script_name>', methods=['GET'])
 def run_script(challenge, script_name):
     challenge_path = os.path.join(BASE_DIR, challenge)
-    
-    # Check if challenge folder exists
     if not os.path.isdir(challenge_path):
         return jsonify({"error": f"Challenge '{challenge}' not found"}), 404
 
-    # Find the Python script
     script_file = os.path.join(challenge_path, f"{script_name}.py")
     if not os.path.isfile(script_file):
         return jsonify({"error": f"Script '{script_name}.py' not found in '{challenge}'"}), 404
 
     try:
-        # Run the script and capture output
         result = subprocess.run(
             ["python", script_file],
             capture_output=True, text=True, check=True
