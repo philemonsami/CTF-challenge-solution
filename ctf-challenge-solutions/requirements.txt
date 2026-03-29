@@ -1,3 +1,4 @@
 requests
 pycryptodome
 scapy
+Flask==2.3.2
